@@ -1293,8 +1293,12 @@ class TexinfoTranslator(SphinxTranslator):
         self.visit_literal_block(None)
         productionlist = cast(Iterable[addnodes.production], node)
         names = (production['tokenname'] for production in productionlist)
-        maxlen = max(len(name) for name in names)
 
+        if not names:
+            self.depart_literal_block(None)
+            raise nodes.SkipNode
+
+        maxlen = max(len(name) for name in names)
         for production in productionlist:
             if production['tokenname']:
                 for id in production.get('ids'):
